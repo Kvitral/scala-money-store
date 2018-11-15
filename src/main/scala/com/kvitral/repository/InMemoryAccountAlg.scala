@@ -1,7 +1,6 @@
 package com.kvitral.repository
 
 import cats.Monad
-import cats.data.EitherT
 import cats.effect.concurrent.Ref
 import cats.syntax.all._
 import com.kvitral.algebras.{AccountAlg, Logging}

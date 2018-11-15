@@ -1,13 +1,12 @@
-package ru.kvitral.repository
+package com.kvitral.repository
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import cats.effect.concurrent.Ref
 import com.kvitral.model.errors.{AccountServiceErrors, InsufficientBalance}
 import com.kvitral.model.{Account, Transaction}
-import com.kvitral.repository.{InMemoryAccountAlg, TaskLogger}
+import com.kvitral.utils.TaskRouteTest
 import monix.eval.Task
 import org.scalatest.{FlatSpec, Matchers}
-import ru.kvitral.utils.TaskRouteTest
 
 class InMemoryAccountAlgSpec extends FlatSpec with Matchers with ScalatestRouteTest with TaskRouteTest {
 

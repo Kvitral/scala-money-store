@@ -1,6 +1,5 @@
 package com.kvitral.algebras
 
-import cats.data.EitherT
 import com.kvitral.model.errors.AccountServiceErrors
 import com.kvitral.model.{Account, Transaction}
 

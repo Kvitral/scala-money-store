@@ -15,11 +15,12 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Promise}
 
 object Server {
-  implicit val system = ActorSystem("my-system")
-  implicit val materializer = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem("my-system")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val scheduler: Scheduler = monix.execution.Scheduler.global
 
-  val initAccounts = Ref.of[Task, Map[Long, Account]](Map[Long, Account]((1, Account(1L, 500d, "RUB")), (2, Account(2L, 100d, "RUB"))))
+  val initAccounts: Task[Ref[Task, Map[Long, Account]]] =
+    Ref.of(Map[Long, Account]((1, Account(1L, 500d, "RUB")), (2, Account(2L, 100d, "RUB"))))
 
   def main(args: Array[String]): Unit = {
 
@@ -51,4 +52,3 @@ object Server {
 
   }
 }
-
