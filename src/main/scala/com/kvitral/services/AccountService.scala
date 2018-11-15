@@ -9,26 +9,23 @@ import com.kvitral.model.{Account, Transaction}
 
 import scala.language.higherKinds
 
-class AccountService[F[_] : Monad](accRepo: AccountAlg[F], logger: Logging[F]) {
+class AccountService[F[_]: Monad](accRepo: AccountAlg[F], logger: Logging[F]) {
 
   def getAccount(id: Long): EitherT[F, AccountNotFound.type, Account] =
-    EitherT.fromOptionF(
-      for {
-        _ <- logger.info(s"getting account for $id")
-        account <- accRepo.getAccount(id)
-      } yield account,
-      AccountNotFound)
+    EitherT.fromOptionF(for {
+      _ <- logger.info(s"getting account for $id")
+      account <- accRepo.getAccount(id)
+    } yield account, AccountNotFound)
 
-  def changeBalance(transaction: Transaction): F[Either[AccountServiceErrors, Unit]] = {
+  def changeBalance(transaction: Transaction): F[Either[AccountServiceErrors, Unit]] =
     for {
       _ <- logger.info(s"changing balance with transaction $transaction")
       after <- accRepo.changeBalance(transaction)
     } yield after
-  }
 
 }
 
 object AccountService {
-  def apply[F[_] : Monad](accRepo: AccountAlg[F], logger: Logging[F]): AccountService[F] =
+  def apply[F[_]: Monad](accRepo: AccountAlg[F], logger: Logging[F]): AccountService[F] =
     new AccountService(accRepo, logger)
 }

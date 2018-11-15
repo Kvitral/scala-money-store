@@ -14,13 +14,15 @@ trait EffectToRoute[F[_]] {
 object EffectToRoute {
   //  def apply[F[_], A: ToResponseMarshaller]: EffectToRoute[F] = implicitly[EffectToRoute[F]]
 
-  implicit def toRoute[F[_], A: ToResponseMarshaller](implicit effectToRoute: EffectToRoute[F]): EffectToRoute[F] = effectToRoute
+  implicit def toRoute[F[_], A: ToResponseMarshaller](
+      implicit effectToRoute: EffectToRoute[F]): EffectToRoute[F] = effectToRoute
 
   implicit def convertTask(implicit s: Scheduler): EffectToRoute[Task] = new EffectToRoute[Task] {
-    override def toRoute[A: ToResponseMarshaller](fa: Task[A]): StandardRoute = complete(fa.runToFuture(s))
+    override def toRoute[A: ToResponseMarshaller](fa: Task[A]): StandardRoute =
+      complete(fa.runToFuture(s))
   }
 
-  implicit val convertId = new EffectToRoute[Id] {
+  implicit val convertId: EffectToRoute[Id] = new EffectToRoute[Id] {
     override def toRoute[A: ToResponseMarshaller](fa: Id[A]): StandardRoute = complete(fa)
   }
 }
