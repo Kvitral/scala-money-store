@@ -28,6 +28,7 @@ class AccountEndpoint[F[_] : Monad : EffectToRoute](accountService: AccountServi
       entity(as[Transaction]) { tr =>
         val res = accountService.changeBalance(tr).value.map(
           _.left.map(err => ErrorMessage("something went wrong", err)))
+        //          .map(x=> "OK")
         effectToRoute.toRoute(res)
       }
     }

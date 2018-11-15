@@ -8,5 +8,5 @@ case class Transaction(from: Long, to: Long, amount: Double, currency: String)
 
 object Transaction {
   implicit val accountEncoder: Encoder[Transaction] = deriveEncoder[Transaction]
-  implicit val accountDencoder: Decoder[Transaction] = deriveDecoder[Transaction]
+  implicit val accountDecoder: Decoder[Transaction] = deriveDecoder[Transaction]
 }

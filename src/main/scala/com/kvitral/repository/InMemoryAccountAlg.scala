@@ -34,6 +34,7 @@ class InMemoryAccountAlg[F[_] : Monad](accountState: Ref[F, Map[Long, Account]],
             }
           }
       }
+      _ <- logger.info(s"result map is ${trResult.toString}")
     } yield trResult)
 
 
