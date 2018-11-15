@@ -3,7 +3,7 @@ package com.kvitral.model
 import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 
-case class Transaction(from: Long, to: Long, amount: Double, currency: String)
+case class Transaction(from: Long, to: Long, amount: BigDecimal, currency: String)
 
 
 object Transaction {

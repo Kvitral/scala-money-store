@@ -3,7 +3,7 @@ package com.kvitral.model
 import io.circe.generic.semiauto._
 import io.circe.{Decoder, Encoder}
 
-case class Account(id: Long, balance: Double, currency: String)
+case class Account(id: Long, balance: BigDecimal, currency: String)
 
 
 object Account {
