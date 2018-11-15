@@ -1,5 +1,5 @@
 
-![Build Status](https://travis-ci.org/Kvitral/scala-money-store.svg?branch=master)
+[![Build Status](https://travis-ci.org/Kvitral/scala-money-store.svg?branch=master)](https://travis-ci.org/Kvitral/scala-money-store)
 # scala-money-store
 **F[_] for Funky**
 
