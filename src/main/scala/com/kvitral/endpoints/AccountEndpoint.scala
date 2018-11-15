@@ -29,7 +29,7 @@ class AccountEndpoint[F[_] : Monad : EffectToRoute](accountService: AccountServi
 
         val res = accountService.changeBalance(tr)
           .map(_.left.map(err => ErrorMessage("something went wrong", err))
-            .map(_=> "OK"))
+            .map(_ => "OK"))
 
         effectToRoute.toRoute(res)
       }
