@@ -16,8 +16,8 @@ class InMemoryAccountAlg[F[_] : Monad](accountState: Ref[F, Map[Long, Account]],
     account <- accountState.get
   } yield account.get(i)
 
-  override def changeBalance(transaction: Transaction): EitherT[F, AccountServiceErrors, Unit] =
-    EitherT.liftF(for {
+  override def changeBalance(transaction: Transaction): F[Either[AccountServiceErrors, Unit]] =
+    for {
       trResult <- accountState.modify { accState =>
         accState.get(transaction.from)
           .fold((accState, Either.left[AccountServiceErrors, Unit](AccountNotFound))) { accFrom =>
@@ -35,7 +35,7 @@ class InMemoryAccountAlg[F[_] : Monad](accountState: Ref[F, Map[Long, Account]],
           }
       }
       _ <- logger.info(s"result map is ${trResult.toString}")
-    } yield trResult)
+    } yield trResult
 
 
 }

@@ -19,12 +19,11 @@ class AccountService[F[_] : Monad](accRepo: AccountAlg[F], logger: Logging[F]) {
       } yield account,
       AccountNotFound)
 
-  def changeBalance(transaction: Transaction): EitherT[F, AccountServiceErrors, Unit] = {
+  def changeBalance(transaction: Transaction): F[Either[AccountServiceErrors, Unit]] = {
     for {
       _ <- logger.info(s"changing balance with transaction $transaction")
-    } yield ()
-
-    accRepo.changeBalance(transaction)
+      after <- accRepo.changeBalance(transaction)
+    } yield after
   }
 
 }
