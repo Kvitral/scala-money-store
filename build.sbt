@@ -1,4 +1,5 @@
-name := "moneystore"
+organization := "io.github.Kvitral"
+name := "scala-money-store"
 
 version := "0.1"
 
@@ -23,3 +24,9 @@ libraryDependencies ++= Seq(
 libraryDependencies += "de.heikoseeberger" % "akka-http-circe_2.12" % "1.22.0"
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
+
+
+lazy val main = (project in file(".")).settings(
+  assemblyJarName := "scala-money-store.jar",
+  mainClass := Some("com.kvitral.Server")
+)
