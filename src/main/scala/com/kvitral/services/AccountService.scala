@@ -11,11 +11,11 @@ import scala.language.higherKinds
 
 class AccountService[F[_]: Monad](accRepo: AccountAlg[F], logger: Logging[F]) {
 
-  def getAccount(id: Long): EitherT[F, AccountNotFound.type, Account] =
-    EitherT.fromOptionF(for {
+  def getAccount(id: Long): F[Either[AccountNotFound.type, Account]] =
+    for {
       _ <- logger.info(s"getting account for $id")
       account <- accRepo.getAccount(id)
-    } yield account, AccountNotFound)
+    } yield account.toRight(AccountNotFound)
 
   def changeBalance(transaction: Transaction): F[Either[AccountServiceErrors, Unit]] =
     for {

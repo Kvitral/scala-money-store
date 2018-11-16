@@ -20,7 +20,6 @@ class AccountEndpoint[F[_]: Monad: EffectToRoute](accountService: AccountService
       parameters('accountId.as[Long]) { id =>
         val res = accountService
           .getAccount(id)
-          .value
           .map(_.left.map(err => ErrorMessage(s"Couldn`t find account with id $id", err)))
         effectToRoute.toRoute(res)
       }
