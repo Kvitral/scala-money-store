@@ -24,7 +24,7 @@ object Server {
 
   def main(args: Array[String]): Unit = {
 
-    val appLogger = new TaskLogger("Main")
+    val appLogger = TaskLogger("Main")
 
     val program = for {
       _ <- appLogger.info("initializing storage:")
