@@ -3,7 +3,7 @@ package com.kvitral.repository
 import cats.Monad
 import cats.effect.concurrent.Ref
 import cats.syntax.all._
-import com.kvitral.algebras.{AccountAlg, CurrenciesAlg, Logging}
+import com.kvitral.algebras.{AccountAlg, Logging}
 import com.kvitral.model.errors.{AccountNotFound, AccountServiceErrors, InsufficientBalance}
 import com.kvitral.model.{Account, Transaction}
 
