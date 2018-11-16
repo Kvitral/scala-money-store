@@ -12,10 +12,16 @@ case object AccountNotFound extends AccountServiceErrors
 
 case object InsufficientBalance extends AccountServiceErrors
 
+sealed trait CurrenciesServiceErrors extends Product with Serializable with ServiceErrors
+
+case object CurrencyNotFound extends CurrenciesServiceErrors
+
 object ServiceErrors {
   private implicit val conf: Configuration = Configuration.default
   implicit val serviceErrorEncoder: Encoder[ServiceErrors] = deriveEnumerationEncoder
   implicit val serviceErrorDecoder: Decoder[ServiceErrors] = deriveEnumerationDecoder
   implicit val accountServiceErrorEncoder: Encoder[AccountServiceErrors] = deriveEnumerationEncoder
   implicit val accountServiceErrorDecoder: Decoder[AccountServiceErrors] = deriveEnumerationDecoder
+  implicit val currenciesServiceErrorEncoder: Encoder[CurrenciesServiceErrors] = deriveEnumerationEncoder
+  implicit val currenciesServiceErrorDecoder: Decoder[CurrenciesServiceErrors] = deriveEnumerationDecoder
 }

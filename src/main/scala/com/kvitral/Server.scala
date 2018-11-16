@@ -5,9 +5,9 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import cats.effect.concurrent.Ref
 import com.kvitral.endpoints.AccountEndpoint
-import com.kvitral.model.{Account, RUB}
-import com.kvitral.repository.{InMemoryAccountAlg, TaskLogger}
-import com.kvitral.services.AccountService
+import com.kvitral.model._
+import com.kvitral.repository.{InMemoryAccountAlg, InMemoryCurrenciesAlg, TaskLogger}
+import com.kvitral.services.{AccountService, CurrenciesService}
 import monix.eval.Task
 import monix.execution.Scheduler
 
@@ -22,20 +22,39 @@ object Server {
   val initAccounts: Task[Ref[Task, Map[Long, Account]]] =
     Ref.of(Map[Long, Account]((1, Account(1L, 500d, RUB)), (2, Account(2L, 100d, RUB))))
 
+  val currenciesMap: Map[(Currency, Currency), BigDecimal] = Map(
+    (RUB, EUR) -> 0.013,
+    (EUR, RUB) -> 74.90,
+    (USD, RUB) -> 66.1,
+    (RUB, USD) -> 0.015,
+    (EUR, USD) -> 1.13,
+    (USD, EUR) -> 0.88,
+    (EUR, EUR) -> 1,
+    (RUB, RUB) -> 1,
+    (USD, USD) -> 1
+  )
+
   def main(args: Array[String]): Unit = {
 
     val appLogger = TaskLogger("Main")
 
     val program = for {
       _ <- appLogger.info("initializing storage:")
-      initStorage <- initAccounts
+      initAccountsStorage <- initAccounts
+      initCurrenciesStorage <- Task.eval(currenciesMap)
       _ <- appLogger.info("initializing loggers:")
       inMemoryAccountLogger = TaskLogger("InMemoryAccountLogger")
       accountServiceLogger = TaskLogger("AccountService")
+      currencyServiceLogger = TaskLogger("CurrencyService")
       _ <- appLogger.info("initializing algebras:")
-      inMemoryAccountAlg = InMemoryAccountAlg[Task](initStorage, inMemoryAccountLogger)
+      inMemoryAccountAlg = InMemoryAccountAlg[Task](initAccountsStorage, inMemoryAccountLogger)
+      inMemoryCurrencyAlg = InMemoryCurrenciesAlg[Task](initCurrenciesStorage)
       _ <- appLogger.info("initializing services:")
-      accountService = AccountService[Task](inMemoryAccountAlg, accountServiceLogger)
+      curencyService = CurrenciesService[Task](inMemoryCurrencyAlg, currencyServiceLogger)
+      accountService = AccountService[Task](
+        inMemoryAccountAlg,
+        accountServiceLogger,
+        curencyService)
       accountEndpoint = AccountEndpoint[Task](accountService)
       _ <- appLogger.info("starting server")
       route <- accountEndpoint.getAccountRoute
