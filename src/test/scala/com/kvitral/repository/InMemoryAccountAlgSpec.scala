@@ -3,7 +3,7 @@ package com.kvitral.repository
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import cats.effect.concurrent.Ref
 import com.kvitral.model.errors.{AccountServiceErrors, InsufficientBalance}
-import com.kvitral.model.{Account, Transaction}
+import com.kvitral.model.{Account, RUB, Transaction}
 import com.kvitral.utils.TaskRouteTest
 import monix.eval.Task
 import org.scalatest.{FlatSpec, Matchers}
@@ -12,9 +12,9 @@ class InMemoryAccountAlgSpec extends FlatSpec with Matchers with ScalatestRouteT
 
   trait mix {
     val initMap: Map[Long, Account] = Map(
-      (1, Account(1L, 500d, "RUB")),
-      (2, Account(2L, 100d, "RUB")),
-      (3, Account(3L, 200d, "RUB"))
+      (1, Account(1L, 500d, RUB)),
+      (2, Account(2L, 100d, RUB)),
+      (3, Account(3L, 200d, RUB))
     )
     val initRef: Task[Ref[Task, Map[Long, Account]]] = Ref.of(initMap)
 
@@ -32,9 +32,9 @@ class InMemoryAccountAlgSpec extends FlatSpec with Matchers with ScalatestRouteT
 
      */
     def concurrentUpdates(inMemoryAccountAlg: InMemoryAccountAlg[Task]): Task[List[Either[AccountServiceErrors, Unit]]] = {
-      val t12 = Transaction(1, 2, 200, "RUB")
-      val t23 = Transaction(2, 3, 400, "RUB")
-      val t31 = Transaction(3, 1, 100, "RUB")
+      val t12 = Transaction(1, 2, 200, RUB)
+      val t23 = Transaction(2, 3, 400, RUB)
+      val t31 = Transaction(3, 1, 100, RUB)
 
       val trList = List(t12, t23, t31).map(inMemoryAccountAlg.changeBalance)
 
@@ -47,7 +47,7 @@ class InMemoryAccountAlgSpec extends FlatSpec with Matchers with ScalatestRouteT
   }
 
   "InMemoryAccountAlg.changeBalance" should "change accounts balances" in new mix {
-    val t = Transaction(1, 2, BigDecimal(200.25), "RUB")
+    val t = Transaction(1, 2, BigDecimal(200.25), RUB)
     runTask(for {
       store <- initRef
       inmemory <- getInMemoryAccount(store)

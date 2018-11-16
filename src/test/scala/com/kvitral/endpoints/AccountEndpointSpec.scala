@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.{HttpRequest, MessageEntity}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import cats.effect.concurrent.Ref
 import com.kvitral.model.errors.AccountNotFound
-import com.kvitral.model.{Account, ErrorMessage, Transaction}
+import com.kvitral.model.{Account, ErrorMessage, RUB, Transaction}
 import com.kvitral.repository._
 import com.kvitral.services.AccountService
 import com.kvitral.utils.TaskRouteTest
@@ -15,15 +15,15 @@ import org.scalatest.concurrent.ScalaFutures._
 import org.scalatest.{FlatSpec, Matchers}
 
 class AccountEndpointSpec
-    extends FlatSpec
+  extends FlatSpec
     with Matchers
     with ScalatestRouteTest
     with TaskRouteTest {
 
   trait mix {
     val initMap: Map[Long, Account] = Map(
-      (1, Account(1L, 500d, "RUB")),
-      (2, Account(2L, 100d, "RUB"))
+      (1, Account(1L, 500d, RUB)),
+      (2, Account(2L, 100d, RUB))
     )
 
     def getRoutes: Task[AccountEndpoint[Task]] =
@@ -45,7 +45,7 @@ class AccountEndpointSpec
 
       } yield
         Get("/getAccounts?accountId=1") ~> routes ~> check {
-          responseAs[Account] shouldEqual Account(1L, 500d, "RUB")
+          responseAs[Account] shouldEqual Account(1L, 500d, RUB)
         })
   }
 
@@ -63,7 +63,7 @@ class AccountEndpointSpec
   }
 
   "AccountEndpoint.transfer" should "change balances according to input" in new mix {
-    val transaction = Transaction(1, 2, 100, "RUB")
+    val transaction = Transaction(1, 2, 100, RUB)
     val transactionEntity: MessageEntity = Marshal(transaction).to[MessageEntity].futureValue
     val request: HttpRequest = Post("/transfer").withEntity(transactionEntity)
     runTask(
@@ -78,7 +78,7 @@ class AccountEndpointSpec
         })
   }
   it should "return error message if something is wrong" in new mix {
-    val transaction = Transaction(-1, 1, 100, "RUB")
+    val transaction = Transaction(-1, 1, 100, RUB)
     val transactionEntity: MessageEntity = Marshal(transaction).to[MessageEntity].futureValue
     val request: HttpRequest = Post("/transfer").withEntity(transactionEntity)
     runTask(

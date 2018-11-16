@@ -5,7 +5,7 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import cats.effect.concurrent.Ref
 import com.kvitral.endpoints.AccountEndpoint
-import com.kvitral.model.Account
+import com.kvitral.model.{Account, RUB}
 import com.kvitral.repository.{InMemoryAccountAlg, TaskLogger}
 import com.kvitral.services.AccountService
 import monix.eval.Task
@@ -20,7 +20,7 @@ object Server {
   implicit val scheduler: Scheduler = monix.execution.Scheduler.global
 
   val initAccounts: Task[Ref[Task, Map[Long, Account]]] =
-    Ref.of(Map[Long, Account]((1, Account(1L, 500d, "RUB")), (2, Account(2L, 100d, "RUB"))))
+    Ref.of(Map[Long, Account]((1, Account(1L, 500d, RUB)), (2, Account(2L, 100d, RUB))))
 
   def main(args: Array[String]): Unit = {
 
